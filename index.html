@@ -34,9 +34,19 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin: 10px 0;
         }
         button:hover {
             background-color: #005f99;
+        }
+        .upgrade {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .upgrade button {
+            flex: 1;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -45,13 +55,50 @@
         <h1>Telegram Clicker Mini App</h1>
         <div id="counter">0</div>
         <button onclick="incrementCounter()">Click me!</button>
+        <div class="upgrade">
+            <span>Upgrade 1 (Cost: 10)</span>
+            <button onclick="buyUpgrade(1)">Buy</button>
+        </div>
+        <div class="upgrade">
+            <span>Upgrade 2 (Cost: 50)</span>
+            <button onclick="buyUpgrade(2)">Buy</button>
+        </div>
+        <div class="upgrade">
+            <span>Upgrade 3 (Cost: 100)</span>
+            <button onclick="buyUpgrade(3)">Buy</button>
+        </div>
     </div>
 
     <script>
-        let count = 0;
+        let count = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 0;
+        let clickValue = 1;
+        let upgrades = [
+            { cost: 10, multiplier: 2 },
+            { cost: 50, multiplier: 5 },
+            { cost: 100, multiplier: 10 }
+        ];
+
+        document.getElementById('counter').innerText = count;
+
         function incrementCounter() {
-            count++;
+            count += clickValue;
             document.getElementById('counter').innerText = count;
+            localStorage.setItem('count', count);
+        }
+
+        function buyUpgrade(upgradeIndex) {
+            const upgrade = upgrades[upgradeIndex - 1];
+            if (count >= upgrade.cost) {
+                count -= upgrade.cost;
+                clickValue *= upgrade.multiplier;
+                document.getElementById('counter').innerText = count;
+                localStorage.setItem('count', count);
+                upgrades[upgradeIndex - 1].cost *= 2; // Double the cost of the upgrade after purchase
+                document.querySelectorAll('.upgrade span')[upgradeIndex - 1].innerText = `Upgrade ${upgradeIndex} (Cost: ${upgrade.cost})`;
+                alert(`Upgrade ${upgradeIndex} purchased! Click value is now ${clickValue}.`);
+            } else {
+                alert('Not enough clicks to buy this upgrade!');
+            }
         }
     </script>
 </body>
