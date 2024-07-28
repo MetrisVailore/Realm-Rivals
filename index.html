@@ -11,18 +11,21 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f4;
+            background-color: #121212;
+            color: #ffffff;
             margin: 0;
         }
         .container {
             text-align: center;
-            background: #fff;
+            background: #1e1e1e;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 100%;
         }
         #counter {
-            font-size: 2em;
+            font-size: 2.5em;
             margin: 20px 0;
         }
         button {
@@ -51,13 +54,86 @@
             flex: 1;
             margin-left: 10px;
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffd700;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .header .coin {
+            display: flex;
+            align-items: center;
+        }
+        .header .coin img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        .header .trophy {
+            display: flex;
+            align-items: center;
+        }
+        .header .trophy img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        .header .progress {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .header .progress img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-bar-inner {
+            height: 20px;
+            background-color: #0088cc;
+            width: 0;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .footer button {
+            border: 10px;
+            background: none;
+            cursor: pointer;
+        }
+        .footer img {
+            width: 30px;
+            height: 30px;
+            display: block;
+            margin: 0 auto 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Telegram Clicker Mini App</h1>
-        <div id="counter">0</div>
+        <div class="header">
+            <div class="coin">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuJDK-rwba4f7zVOGlSz91VVybwnN6G60MLw&s" alt="coin">
+                <div id="counter">0</div>
+            </div>
+            <div class="trophy">
+                <img src="https://image.shutterstock.com/image-vector/gold-trophy-icon-vector-illustration-260nw-1388751964.jpg" alt="trophy">
+                <div>Gold</div>
+            </div>
+        </div>
         <button onclick="incrementCounter()">Click me!</button>
+        <!--
         <div class="upgrade-section">
             <h2>Upgrades</h2>
             <div class="upgrade">
@@ -72,6 +148,28 @@
                 <span>Upgrade 3 (Cost: 100)</span>
                 <button onclick="buyUpgrade(3)">Buy</button>
             </div>
+        </div>
+        -->
+        <div class="progress">
+            <img src="https://image.shutterstock.com/image-vector/lightning-bolt-icon-vector-illustration-260nw-1388751964.jpg" alt="energy">
+            <div>5500 / 6500</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-bar-inner" style="width: 85%;"></div>
+        </div>
+        <div class="footer">
+            <button onclick="location.href='frens.html'">
+                <img src="https://static.thenounproject.com/png/3439875-200.png" alt="Frens">
+                <div>Frens</div>
+            </button>
+            <button onclick="location.href='earn.html'">
+                <img src="https://www.shareicon.net/data/512x512/2015/11/24/677037_save_512x512.png" alt="Earn">
+                <div>Earn</div>
+            </button>
+            <button onclick="location.href='boosts.html'">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/015/117/377/small/thunder-power-icon-in-black-and-white-lightning-signs-illustration-png.png" alt="Boosts">
+                <div>Boosts</div>
+            </button>
         </div>
     </div>
 
