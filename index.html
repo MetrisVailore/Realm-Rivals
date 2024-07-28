@@ -39,6 +39,9 @@
         button:hover {
             background-color: #005f99;
         }
+        .upgrade-section {
+            margin-top: 20px;
+        }
         .upgrade {
             display: flex;
             justify-content: space-between;
@@ -55,21 +58,27 @@
         <h1>Telegram Clicker Mini App</h1>
         <div id="counter">0</div>
         <button onclick="incrementCounter()">Click me!</button>
-        <div class="upgrade">
-            <span>Upgrade 1 (Cost: 10)</span>
-            <button onclick="buyUpgrade(1)">Buy</button>
-        </div>
-        <div class="upgrade">
-            <span>Upgrade 2 (Cost: 50)</span>
-            <button onclick="buyUpgrade(2)">Buy</button>
-        </div>
-        <div class="upgrade">
-            <span>Upgrade 3 (Cost: 100)</span>
-            <button onclick="buyUpgrade(3)">Buy</button>
+        <div class="upgrade-section">
+            <h2>Upgrades</h2>
+            <div class="upgrade">
+                <span>Upgrade 1 (Cost: 10)</span>
+                <button onclick="buyUpgrade(1)">Buy</button>
+            </div>
+            <div class="upgrade">
+                <span>Upgrade 2 (Cost: 50)</span>
+                <button onclick="buyUpgrade(2)">Buy</button>
+            </div>
+            <div class="upgrade">
+                <span>Upgrade 3 (Cost: 100)</span>
+                <button onclick="buyUpgrade(3)">Buy</button>
+            </div>
         </div>
     </div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        Telegram.WebApp.ready();
+
         let count = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 0;
         let clickValue = 1;
         let upgrades = [
@@ -84,6 +93,8 @@
             count += clickValue;
             document.getElementById('counter').innerText = count;
             localStorage.setItem('count', count);
+            Telegram.WebApp.MainButton.setText(`Counter: ${count}`);
+            Telegram.WebApp.MainButton.show();
         }
 
         function buyUpgrade(upgradeIndex) {
