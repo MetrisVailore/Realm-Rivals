@@ -28,6 +28,26 @@
             font-size: 2.5em;
             margin: 20px 0;
         }
+        .clickable-coin {
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .clickable-coin:hover {
+            transform: scale(1.1);
+        }
+        .clickable-coin:active {
+            animation: bounce 0.2s;
+        }
+        @keyframes bounce {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1.0); }
+        }
+        .clickable-coin img {
+            width: 100px;
+            height: 100px;
+        }
         button {
             font-size: 1em;
             padding: 10px 20px;
@@ -128,11 +148,13 @@
                 <div id="counter">0</div>
             </div>
             <div class="trophy">
-                <img src="https://image.shutterstock.com/image-vector/gold-trophy-icon-vector-illustration-260nw-1388751964.jpg" alt="trophy">
+                <img src="Trophy.png" alt="trophy">
                 <div>Gold</div>
             </div>
         </div>
-        <button onclick="incrementCounter()">Click me!</button>
+        <div class="clickable-coin" onclick="incrementCounter()">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuJDK-rwba4f7zVOGlSz91VVybwnN6G60MLw&s" alt="coin">
+        </div>
         <!--
         <div class="upgrade-section">
             <h2>Upgrades</h2>
@@ -152,10 +174,10 @@
         -->
         <div class="progress">
             <img src="https://image.shutterstock.com/image-vector/lightning-bolt-icon-vector-illustration-260nw-1388751964.jpg" alt="energy">
-            <div>5500 / 6500</div>
+            <div id="energy">3500</div> / 6500
         </div>
         <div class="progress-bar">
-            <div class="progress-bar-inner" style="width: 85%;"></div>
+            <div class="progress-bar-inner" id="progress-bar-inner" style="width: 100%;"></div>
         </div>
         <div class="footer">
             <button onclick="location.href='frens.html'">
@@ -179,6 +201,9 @@
 
         let count = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 0;
         let clickValue = 1;
+        let energy = 6500;
+        const maxEnergy = 6500;
+        const energyCostPerClick = 100;
         let upgrades = [
             { cost: 10, multiplier: 2 },
             { cost: 50, multiplier: 5 },
@@ -186,13 +211,22 @@
         ];
 
         document.getElementById('counter').innerText = count;
+        document.getElementById('energy').innerText = energy;
+        document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
 
         function incrementCounter() {
-            count += clickValue;
-            document.getElementById('counter').innerText = count;
-            localStorage.setItem('count', count);
-            Telegram.WebApp.MainButton.setText(`Counter: ${count}`);
-            Telegram.WebApp.MainButton.show();
+            if (energy >= energyCostPerClick) {
+                count += clickValue;
+                energy -= energyCostPerClick;
+                document.getElementById('counter').innerText = count;
+                document.getElementById('energy').innerText = energy;
+                document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
+                localStorage.setItem('count', count);
+                Telegram.WebApp.MainButton.setText(`Counter: ${count}`);
+                Telegram.WebApp.MainButton.show();
+            } else {
+                alert('Not enough energy to click!');
+            }
         }
 
         function buyUpgrade(upgradeIndex) {
