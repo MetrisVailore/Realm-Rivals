@@ -179,7 +179,7 @@
         -->
         <div class="progress">
             <img src="Energy.png" alt="energy">
-            <div id="energy">3500</div> / 6500
+            <div id="energy">100</div> / 100
         </div>
         <div class="progress-bar">
             <div class="progress-bar-inner" id="progress-bar-inner" style="width: 100%;"></div>
@@ -206,9 +206,9 @@
 
         let count = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 0;
         let clickValue = 1;
-        let energy = 6500;
-        const maxEnergy = 6500;
-        const energyCostPerClick = 100;
+        let energy = 100;
+        const maxEnergy = 100;
+        const energyCostPerClick = 1;
         let upgrades = [
             { cost: 10, multiplier: 2 },
             { cost: 50, multiplier: 5 },
