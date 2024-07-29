@@ -148,37 +148,19 @@
                 <div id="counter">0</div>
             </div>
 
-        <!--
-        <div class="upgrade-section">
-            <h2>Upgrades</h2>
-            <div class="upgrade">
-                <span>Upgrade 1 (Cost: 10)</span>
-                <button onclick="buyUpgrade(1)">Buy</button>
-            </div>
-            <div class="upgrade">
-                <span>Upgrade 2 (Cost: 50)</span>
-                <button onclick="buyUpgrade(2)">Buy</button>
-            </div>
-            <div class="upgrade">
-                <span>Upgrade 3 (Cost: 100)</span>
-                <button onclick="buyUpgrade(3)">Buy</button>
-            </div>
-        </div>
-        -->
-
     </div>
     <div class="upgrade-section">
             <h2>Upgrades</h2>
             <div class="upgrade">
-                <span>Upgrade 1 (Cost: 10)</span>
+                <span>Upgrade 1 (Cost: <span id="upgrade1-cost">10</span>)</span>
                 <button onclick="buyUpgrade(1)">Buy</button>
             </div>
             <div class="upgrade">
-                <span>Upgrade 2 (Cost: 50)</span>
+                <span>Upgrade 2 (Cost: <span id="upgrade2-cost">50</span>)</span>
                 <button onclick="buyUpgrade(2)">Buy</button>
             </div>
             <div class="upgrade">
-                <span>Upgrade 3 (Cost: 100)</span>
+                <span>Upgrade 3 (Cost: <span id="upgrade3-cost">100</span>)</span>
                 <button onclick="buyUpgrade(3)">Buy</button>
             </div>
         </div>
@@ -202,15 +184,38 @@
         Telegram.WebApp.ready();
 
         let count = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 0;
-        let clickValue = 1;
-        let energy = 100;
+        let clickValue = localStorage.getItem('clickValue') ? parseInt(localStorage.getItem('clickValue')) : 1;
+        let energy = localStorage.getItem('energy') ? parseInt(localStorage.getItem('energy')) : 100;
         const maxEnergy = 100;
         const energyCostPerClick = 1;
-        let upgrades = [
-            { cost: 10, multiplier: 2 },
-            { cost: 50, multiplier: 5 },
-            { cost: 100, multiplier: 10 }
+        let upgrades = JSON.parse(localStorage.getItem('upgrades')) || [
+            { cost: 10, multiplier: 1.1 },
+            { cost: 50, multiplier: 1.2 },
+            { cost: 100, multiplier: 1.3 }
         ];
+
+        document.getElementById('counter').innerText = count;
+        document.getElementById('energy').innerText = energy;
+        document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
+        document.getElementById('upgrade1-cost').innerText = upgrades[0].cost;
+        document.getElementById('upgrade2-cost').innerText = upgrades[1].cost;
+        document.getElementById('upgrade3-cost').innerText = upgrades[2].cost;
+
+        function incrementCounter() {
+            if (energy >= energyCostPerClick) {
+                count += clickValue;
+                energy -= energyCostPerClick;
+                document.getElementById('counter').innerText = count;
+                document.getElementById('energy').innerText = energy;
+                document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
+                localStorage.setItem('count', count);
+                localStorage.setItem('energy', energy);
+                Telegram.WebApp.MainButton.setText(`Counter: ${count}`);
+                Telegram.WebApp.MainButton.show();
+            } else {
+                alert('Not enough energy to click!');
+            }
+        }
 
         function buyUpgrade(upgradeIndex) {
             const upgrade = upgrades[upgradeIndex - 1];
@@ -219,8 +224,10 @@
                 clickValue *= upgrade.multiplier;
                 document.getElementById('counter').innerText = count;
                 localStorage.setItem('count', count);
-                upgrades[upgradeIndex - 1].cost *= 2; // Double the cost of the upgrade after purchase
-                document.querySelectorAll('.upgrade span')[upgradeIndex - 1].innerText = `Upgrade ${upgradeIndex} (Cost: ${upgrade.cost})`;
+                localStorage.setItem('clickValue', clickValue);
+                upgrades[upgradeIndex - 1].cost *= 2; // Double thecost of the upgrade after purchase
+                document.querySelector(`#upgrade${upgradeIndex}-cost`).innerText = upgrades[upgradeIndex - 1].cost;
+                localStorage.setItem('upgrades', JSON.stringify(upgrades));
                 alert(`Upgrade ${upgradeIndex} purchased! Click value is now ${clickValue}.`);
             } else {
                 alert('Not enough clicks to buy this upgrade!');
