@@ -48,6 +48,7 @@
             width: 100px;
             height: 100px;
         }
+
         button {
             font-size: 1em;
             padding: 10px 20px;
@@ -110,11 +111,13 @@
             height: 20px;
             margin-right: 10px;
         }
+
         .progress img {
             width: 20px;
             height: 20px;
             margin-right: 10px;
         }
+
         .progress-bar {
             width: 100%;
             background-color: #ddd;
@@ -149,34 +152,17 @@
     <div class="container">
         <div class="header">
             <div class="coin">
-                <img src="Bitcoin.png" alt="coin">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuJDK-rwba4f7zVOGlSz91VVybwnN6G60MLw&s" alt="coin">
                 <div id="counter">0</div>
             </div>
             <div class="trophy">
-                <img src="Trophy.png" alt="trophy">
+                <img src="https://image.shutterstock.com/image-vector/gold-trophy-icon-vector-illustration-260nw-1388751964.jpg" alt="trophy">
                 <div>Gold</div>
             </div>
         </div>
         <div class="clickable-coin" ontouchstart="incrementCounter()" onclick="incrementCounter()">
-            <img src="Bitcoin.png" alt="coin">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuJDK-rwba4f7zVOGlSz91VVybwnN6G60MLw&s" alt="coin">
         </div>
-        <!--
-        <div class="upgrade-section">
-            <h2>Upgrades</h2>
-            <div class="upgrade">
-                <span>Upgrade 1 (Cost: 10)</span>
-                <button onclick="buyUpgrade(1)">Buy</button>
-            </div>
-            <div class="upgrade">
-                <span>Upgrade 2 (Cost: 50)</span>
-                <button onclick="buyUpgrade(2)">Buy</button>
-            </div>
-            <div class="upgrade">
-                <span>Upgrade 3 (Cost: 100)</span>
-                <button onclick="buyUpgrade(3)">Buy</button>
-            </div>
-        </div>
-        -->
         <div class="progress">
             <img src="Energy.png" alt="energy">
             <div id="energy">100</div> / 100
@@ -198,6 +184,7 @@
                 <div>Boosts</div>
             </button>
         </div>
+        <button class="reset-button" onclick="resetGame()">Reset Game</button>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -205,19 +192,22 @@
         Telegram.WebApp.ready();
 
         let count = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 0;
-        let clickValue = 1;
-        let energy = 100;
+        let clickValue = localStorage.getItem('clickValue') ? parseInt(localStorage.getItem('clickValue')) : 1;
+        let energy = localStorage.getItem('energy') ? parseInt(localStorage.getItem('energy')) : 100;
         const maxEnergy = 100;
         const energyCostPerClick = 1;
-        let upgrades = [
-            { cost: 10, multiplier: 2 },
-            { cost: 50, multiplier: 5 },
-            { cost: 100, multiplier: 10 }
+        let upgrades = JSON.parse(localStorage.getItem('upgrades')) || [
+            { cost: 10, multiplier: 1.01 },
+            { cost: 50, multiplier: 1.02 },
+            { cost: 100, multiplier: 1.03 }
         ];
 
         document.getElementById('counter').innerText = count;
         document.getElementById('energy').innerText = energy;
         document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
+        document.getElementById('upgrade1-cost').innerText = upgrades[0].cost;
+        document.getElementById('upgrade2-cost').innerText = upgrades[1].cost;
+        document.getElementById('upgrade3-cost').innerText = upgrades[2].cost;
 
         function incrementCounter() {
             if (energy >= energyCostPerClick) {
@@ -227,6 +217,7 @@
                 document.getElementById('energy').innerText = energy;
                 document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
                 localStorage.setItem('count', count);
+                localStorage.setItem('energy', energy);
                 Telegram.WebApp.MainButton.setText(`Counter: ${count}`);
                 Telegram.WebApp.MainButton.show();
             } else {
@@ -241,12 +232,28 @@
                 clickValue *= upgrade.multiplier;
                 document.getElementById('counter').innerText = count;
                 localStorage.setItem('count', count);
-                upgrades[upgradeIndex - 1].cost *= 2; // Double the cost of the upgrade after purchase
-                document.querySelectorAll('.upgrade span')[upgradeIndex - 1].innerText = `Upgrade ${upgradeIndex} (Cost: ${upgrade.cost})`;
+                localStorage.setItem('clickValue', clickValue);
+                upgrades[upgradeIndex - 1].cost *= 2; // Double thecost of the upgrade after purchase
+                document.querySelector(`#upgrade${upgradeIndex}-cost`).innerText = upgrades[upgradeIndex - 1].cost;
+                localStorage.setItem('upgrades', JSON.stringify(upgrades));
                 alert(`Upgrade ${upgradeIndex} purchased! Click value is now ${clickValue}.`);
             } else {
                 alert('Not enough clicks to buy this upgrade!');
             }
+        }
+
+        function resetGame() {
+            count = 0;
+            energy = 100;
+            clickValue = 1;
+            document.getElementById('counter').innerText = count;
+            document.getElementById('energy').innerText = energy;
+            document.getElementById('progress-bar-inner').style.width = `${(energy / maxEnergy) * 100}%`;
+            localStorage.setItem('count', count);
+            localStorage.setItem('energy', energy);
+            localStorage.setItem('clickValue', clickValue);
+            Telegram.WebApp.MainButton.setText(`Counter: ${count}`);
+            Telegram.WebApp.MainButton.show();
         }
     </script>
 </body>
